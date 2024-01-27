@@ -33,26 +33,35 @@ const clcbtns = [
 function App() {
   const [input, setInput] = useState('0');
   const [result, setResult] = useState('');
+  const [isEqualPressed, setIsEqualPressed] = useState(false);
   
 
   const handleButtonClick = (value) => {
     if (value === '=') {
       try {
         setResult(eval(input.replace(/ /g, '')).toString());
+        setIsEqualPressed(true);
+        
       } catch (error) {
         setResult('Error');
       }
     } else if (value === 'C') {
       setInput('0');
       setResult('0');
+      setIsEqualPressed(false);
+      
     }
-   else if (value === '/' || value === '+' || value === '-' || value === '*') {
+   else if (value === '/' || value === '+' ||  value === '-' ||   value === '*') {
+    setIsEqualPressed(false);
+    const myRe = /[+*/-]$/g;
     setInput((prevInput) => (
       
-      prevInput === '0'  ?  '' + value : prevInput + value));
+      isEqualPressed ? result + value : prevInput.match(myRe) ? prevInput.slice(0, -1) + value   : prevInput === '0'  ?  '' + value : prevInput + value));
+      
     setResult(value);
   }
      else {
+      setIsEqualPressed(false);
       setInput((prevInput) => {
         if (value === '.' && prevInput.endsWith('.')  ) {
           // If '.' is already present, don't append another one
